@@ -1,0 +1,71 @@
+<ion-header>
+
+  <ion-navbar>
+
+    <ion-buttons start *ngIf="!desktop">
+      <button ion-button icon-only (tap)="share()">
+        <ion-icon name="person-add"></ion-icon>
+      </button>
+    </ion-buttons>
+
+    <ion-title (press)="editList($event)">{{lista}}</ion-title>
+
+    <ion-buttons end="">
+      <button ion-button icon-only (tap)="promptItem()">
+        <ion-icon name="add-circle"></ion-icon>
+      </button>
+    </ion-buttons>
+
+  </ion-navbar>
+
+</ion-header>
+
+<ion-content>
+
+  <ion-list>
+    <ion-list-header>
+      Activos
+    </ion-list-header>
+    <ion-item inset *ngFor="let item of itemsActive">
+        <ion-checkbox [(ngModel)]="item.tachado" (press)="editItem($event, item)" (tap)="moveItem(item)" item-left></ion-checkbox>
+        <ion-label>{{item.nombre}}</ion-label>    
+        <span item-right="">{{item.precio}}€</span>
+        <button ion-button item-end (tap)="delItem(item)">
+          <ion-icon name="close"></ion-icon>
+        </button>
+    </ion-item>
+  </ion-list>
+
+  <br>
+
+  <ion-list>
+    <ion-list-header>
+      Tachados
+    </ion-list-header>
+    <ion-item inset *ngFor="let itemD of itemsDone" [ngStyle]="{'text-decoration': 'line-through'}">
+        <ion-checkbox [(ngModel)]="itemD.tachado" (press)="editItem($event, itemD)" (tap)="moveItem(itemD)" item-left></ion-checkbox>
+        <ion-label>{{itemD.nombre}}</ion-label>    
+        <span item-right="">{{itemD.precio}}€</span>
+        <button ion-button item-end (tap)="delItem(itemD)">
+          <ion-icon name="close"></ion-icon>
+        </button>
+    </ion-item>
+    
+  </ion-list>
+
+</ion-content>
+
+<ion-footer>
+  <ion-toolbar *ngIf="gastado">
+    <ion-item inset (swipe)="gastado=!gastado">
+      <ion-label>Total Gastado: </ion-label>    
+      <span item-right="">{{totalGastado}}€</span>
+    </ion-item>
+  </ion-toolbar>
+  <ion-toolbar *ngIf="!gastado">
+    <ion-item inset (swipe)="gastado=!gastado">
+      <ion-label>Total Activos: </ion-label>    
+      <span item-right="">{{totalActivos}}€</span>
+    </ion-item>
+  </ion-toolbar>
+</ion-footer>
