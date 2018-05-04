@@ -1,6 +1,6 @@
 {
-  "name": "compraCompartida",
-  "short_name": "compraCompartida",
+  "name": "Listas Compartidas",
+  "short_name": "ListasCompartida",
   "start_url": "index.html",
   "display": "standalone",
   "icons": [{

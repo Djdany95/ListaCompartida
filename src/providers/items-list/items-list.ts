@@ -1,6 +1,5 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Item } from '../../models/item';
 
 /*
   Generated class for the ItemsListProvider provider.
@@ -54,5 +53,22 @@ export class ItemsListProvider {
       body: { pass: pass, itemId: itemId }
     };
     return this._http.delete(this.url + 'item/', httpOptions);
+  }
+
+  delList(pass: string) {
+    const httpOptions = {
+      headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
+      body: { pass: pass }
+    };
+    return this._http.delete(this.url + 'list/', httpOptions);
+  }
+
+  editList(pass: string, lista: string) {
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+    return this._http.post(
+      this.url + 'renamelist/',
+      { pass: pass, lista: lista },
+      { headers: headers }
+    );
   }
 }

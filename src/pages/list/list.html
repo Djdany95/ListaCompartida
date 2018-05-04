@@ -1,6 +1,6 @@
 <ion-header>
 
-  <ion-navbar>
+  <ion-navbar hideBackButton="true">
 
     <ion-buttons start *ngIf="!desktop">
       <button ion-button icon-only (tap)="share()">
@@ -8,7 +8,7 @@
       </button>
     </ion-buttons>
 
-    <ion-title (press)="editList($event)">{{lista}}</ion-title>
+    <ion-title (press)="optionsListAS()">{{lista}}</ion-title>
 
     <ion-buttons end="">
       <button ion-button icon-only (tap)="promptItem()">

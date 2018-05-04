@@ -1,3 +1,4 @@
+import { SlidesPage } from './../slides/slides';
 import { Component, OnInit } from '@angular/core';
 import { SocialSharing } from '@ionic-native/social-sharing';
 
@@ -5,11 +6,13 @@ import {
   NavController,
   NavParams,
   AlertController,
-  Platform
+  Platform,
+  ActionSheetController,
+  ToastController
 } from 'ionic-angular';
 import { Item } from '../../models/item';
 import { ItemsListProvider } from '../../providers/items-list/items-list';
-//import { Storage } from '@ionic/storage';
+import { Storage } from '@ionic/storage';
 
 @Component({
   selector: 'page-list',
@@ -31,15 +34,69 @@ export class ListPage implements OnInit {
     public alertCtrl: AlertController,
     public itemsListProvider: ItemsListProvider,
     public plt: Platform,
-    public socialSharing: SocialSharing //private storage: Storage
+    public socialSharing: SocialSharing,
+    public actionSheetCtrl: ActionSheetController,
+    private toastCtrl: ToastController,
+    private storage: Storage
   ) {}
 
   ngOnInit() {
     if (this.plt.is('core')) {
       this.desktop = true;
     }
+    this.storage.get('pass').then(data => {
+      if (data !== null) {
+        this.getList(data);
+      } else {
+        this.promptInit();
+      }
+    });
+  }
 
-    this.promptInit();
+  optionsListAS() {
+    let actionSheet = this.actionSheetCtrl.create({
+      title: 'Opciones de la Lista',
+      buttons: [
+        {
+          text: 'Eliminar',
+          role: 'destructive',
+          handler: () => {
+            this.promptDelList();
+          }
+        },
+        {
+          text: 'Renombrar',
+          handler: () => {
+            this.promptEditList();
+          }
+        },
+        {
+          text: 'Salir',
+          handler: () => {
+            this.itemsActive = [];
+            this.itemsDone = [];
+            this.totalGastado = 0;
+            this.totalActivos = 0;
+            this.lista = '';
+            this.storage.get('pass').then(data => {
+              if (data !== null) {
+                this.storage.remove('pass');
+              }
+            });
+            this.promptInit();
+          }
+        },
+        {
+          text: 'Cancelar',
+          role: 'cancel',
+          handler: () => {
+            console.log('Cancel clicked');
+          }
+        }
+      ]
+    });
+
+    actionSheet.present();
   }
 
   getList(pass: string) {
@@ -47,11 +104,15 @@ export class ListPage implements OnInit {
     this.itemsDone = [];
     this.totalGastado = 0;
     this.totalActivos = 0;
+    this.lista = '';
     this.itemsListProvider.getList(pass).subscribe(
       response => {
         if (response) {
           this.lista = response.data.lista;
           this.pass = pass;
+          this.storage.get('pass').then(value => {
+            this.storage.set('pass', pass);
+          });
           response.data.items.forEach(element => {
             if (element.tachado === false) {
               this.itemsActive.push(element);
@@ -67,10 +128,6 @@ export class ListPage implements OnInit {
         this.handleErrors(error);
       }
     );
-  }
-
-  editList(e) {
-    console.log('cambiar nombre');
   }
 
   promptInit() {
@@ -89,6 +146,87 @@ export class ListPage implements OnInit {
           text: 'Entrar',
           handler: data => {
             this.promptEntrar();
+          }
+        }
+      ]
+    });
+    prompt.present();
+  }
+
+  promptEditList() {
+    let prompt = this.alertCtrl.create({
+      title: 'Cambiar nombre',
+      message: 'Introduce el nuevo nombre de la lista.',
+      inputs: [
+        {
+          name: 'lista',
+          placeholder: 'Nombre',
+          type: 'text',
+          value: this.lista
+        }
+      ],
+      buttons: [
+        {
+          text: 'Cancelar',
+          role: 'cancel',
+          handler: data => {
+            console.log('Cancel clicked');
+          }
+        },
+        {
+          text: 'Cambiar',
+          handler: data => {
+            this.itemsListProvider.editList(this.pass, data.lista).subscribe(
+              response => {
+                this.showInfoToast('Nombre de la lista cambiado!', 1000, 'top');
+                this.getList(this.pass);
+              },
+              error => {
+                this.handleErrors(error);
+              }
+            );
+          }
+        }
+      ]
+    });
+    prompt.present();
+  }
+
+  promptDelList() {
+    let prompt = this.alertCtrl.create({
+      title: 'Eliminar?',
+      message: 'Introduce la contraseña para eliminar la lista.',
+      inputs: [
+        {
+          name: 'pass',
+          placeholder: 'Contraseña',
+          type: 'password'
+        }
+      ],
+      buttons: [
+        {
+          text: 'Cancelar',
+          role: 'cancel',
+          handler: data => {
+            console.log('Cancel clicked');
+          }
+        },
+        {
+          text: 'Eliminar',
+          handler: data => {
+            if (this.pass === data.pass) {
+              this.itemsListProvider.delList(data.pass).subscribe(
+                response => {
+                  this.showInfoToast('Lista eliminada!');
+                  this.exit();
+                },
+                error => {
+                  this.handleErrors(error);
+                }
+              );
+            } else {
+              this.showAlertError('Error!', 'Contraseña incorrecta');
+            }
           }
         }
       ]
@@ -118,23 +256,38 @@ export class ListPage implements OnInit {
           text: 'Salir',
           role: 'cancel',
           handler: data => {
-            //Ir a otro sitio, se salio de la app sin entrar
-            console.log('Cambiar de pantalla, se salio de la app sin entrar');
+            this.promptInit();
           }
         },
         {
           text: 'Crear',
           handler: data => {
-            this.itemsListProvider.newList(data.nombre, data.pass).subscribe(
-              response => {
-                if (response) {
-                  this.getList(response.data.pass);
+            if (data.nombre === '' || data.pass === '') {
+              this.showAlertError(
+                'Error!',
+                'Nombre y contraseña son obligatorios.',
+                'init'
+              );
+            } else if (data.pass.length < 4) {
+              this.showAlertError(
+                'Error!',
+                'La contraseña tiene que tener mínimo 4 caracteres.',
+                'init'
+              );
+            } else {
+              this.itemsListProvider.newList(data.nombre, data.pass).subscribe(
+                response => {
+                  if (response) {
+                    this.showInfoToast('Lista creada!');
+                    this.getList(response.data.pass);
+                    this.share();
+                  }
+                },
+                error => {
+                  this.handleErrors(error);
                 }
-              },
-              error => {
-                this.handleErrors(error);
-              }
-            );
+              );
+            }
           }
         }
       ]
@@ -158,14 +311,21 @@ export class ListPage implements OnInit {
           text: 'Salir',
           role: 'cancel',
           handler: data => {
-            //Ir a otro sitio, se salio de la app sin entrar
-            console.log('Cambiar de pantalla, se salio de la app sin entrar');
+            this.promptInit();
           }
         },
         {
           text: 'Entrar',
           handler: data => {
-            this.getList(data.pass);
+            if (data.pass.length < 4) {
+              this.showAlertError(
+                'Error!',
+                'La contraseña tiene que tener mínimo 4 caracteres.',
+                'init'
+              );
+            } else {
+              this.getList(data.pass);
+            }
           }
         }
       ]
@@ -316,11 +476,23 @@ export class ListPage implements OnInit {
 
   share() {
     if (this.desktop) {
-      console.log('No se puede compartir en PC');
+      this.showInfoToast('No se puede compartir desde PC!');
       return;
-    }
+    } else {
+      this.socialSharing
+        .shareWithOptions({
+          message: 'Entra en ' + this.lista + ' usando la clave ' + this.pass,
+          files: '../../assets/imgs/whatsIMG.png',
+          url: 'http://localhost:8100'
+        })
+        .then(() => {
+          this.showInfoToast('Lista compartida!');
+        })
+        .catch(err => {
+          console.log('Error compartiendo:', err);
+        });
 
-    this.socialSharing
+      /*this.socialSharing
       .canShareVia('Whatsapp')
       .then(() => {
         // Sharing via whatsapp is possible
@@ -331,7 +503,7 @@ export class ListPage implements OnInit {
             'http://localhost:8100'
           )
           .then(result => {
-            this.showAlertError('BIEN!', result);
+            this.showInfoToast('Lista compartida!');
           })
           .catch(err => {
             this.showAlertError('Error!', 'No se puede compartir por whatsapp');
@@ -340,36 +512,67 @@ export class ListPage implements OnInit {
       .catch(() => {
         // Sharing via whatsapp is not possible
         this.showAlertError('Error!', 'No se encuentra whatsapp');
-      });
+      });*/
+    }
   }
 
   handleErrors(error) {
     if (error != null) {
       console.log(error);
       if (error.status === 500) {
-        this.showAlertError('Error!', 'La contraseña ya existe.');
+        this.showAlertError('Error!', 'La contraseña ya existe.', 'init');
       } else if (error.status === 404) {
-        this.showAlertError('Error!', 'No existe la lista.');
+        this.showAlertError('Error!', 'No existe la lista.', 'init');
       } else if (error.status === 0) {
-        this.showAlertError('Error!', 'No hay conexión a la red.');
+        this.showAlertError('Error!', 'No hay conexión a la red.', 'exit');
       }
     }
   }
 
-  showAlertError(title: string, subTitle: string, button?: string) {
+  showAlertError(title: string, subTitle: string, init?: string) {
     let alert = this.alertCtrl.create({
       title: title,
       subTitle: subTitle,
       enableBackdropDismiss: false,
       buttons: [
         {
-          text: button ? button : 'OK',
+          text: 'OK',
           handler: data => {
-            this.promptInit();
+            if (init) {
+              if (init === 'init') {
+                this.promptInit();
+              } else if (init === 'exit') {
+                this.exit();
+              }
+            }
           }
         }
       ]
     });
     alert.present();
+  }
+
+  showInfoToast(msg: string, duration?: number, position?: string) {
+    let toast = this.toastCtrl.create({
+      message: msg,
+      duration: duration ? duration : 1000,
+      position: position ? position : 'bottom'
+    });
+
+    toast.present();
+  }
+
+  exit() {
+    this.storage.get('skipIntro').then(data => {
+      if (data !== null) {
+        this.storage.remove('skipIntro');
+      }
+    });
+    this.storage.get('pass').then(data => {
+      if (data !== null) {
+        this.storage.remove('pass');
+      }
+    });
+    this.navCtrl.push(SlidesPage);
   }
 }

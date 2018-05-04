@@ -1,6 +1,6 @@
 {
-  "name": "compraCompartida",
-  "app_id": "",
+  "name": "ListasCompartidas",
+  "app_id": "io.djdany01.listasCompartidas",
   "type": "ionic-angular",
   "integrations": {
     "cordova": {}

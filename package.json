@@ -1,8 +1,8 @@
 {
-  "name": "compraCompartida",
-  "version": "0.0.1",
-  "author": "DanielPerez",
-  "homepage": "http://ionicframework.com/",
+  "name": "ListasCompartidas",
+  "version": "1.0.0",
+  "author": "Djdany01",
+  "homepage": "http://www.listascompartidas.com/",
   "private": true,
   "scripts": {
     "clean": "ionic-app-scripts clean",
@@ -45,7 +45,7 @@
     "@ionic/app-scripts": "3.1.9",
     "typescript": "~2.6.2"
   },
-  "description": "App para Listas de Compra Compartidas",
+  "description": "App para compartir listas entre personas con una simple contraseña común",
   "cordova": {
     "plugins": {
       "cordova-plugin-x-socialsharing": {},

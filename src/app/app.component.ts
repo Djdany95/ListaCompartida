@@ -1,11 +1,13 @@
 import { Component, ViewChild } from '@angular/core';
 
-import { Platform, MenuController, Nav } from 'ionic-angular';
+import { Platform, Nav } from 'ionic-angular';
 
 import { ListPage } from '../pages/list/list';
 
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
+import { SlidesPage } from '../pages/slides/slides';
+import { Storage } from '@ionic/storage';
 
 @Component({
   templateUrl: 'app.html'
@@ -13,19 +15,23 @@ import { SplashScreen } from '@ionic-native/splash-screen';
 export class MyApp {
   @ViewChild(Nav) nav: Nav;
 
-  // make ListPage the root (or first) page
-  rootPage = ListPage;
-  pages: Array<{ title: string; component: any }>;
+  rootPage;
 
   constructor(
     public platform: Platform,
     public statusBar: StatusBar,
-    public splashScreen: SplashScreen
+    public splashScreen: SplashScreen,
+    private storage: Storage
   ) {
-    this.initializeApp();
+    this.storage.get('skipIntro').then(data => {
+      if (data != null) {
+        this.rootPage = ListPage;
+      } else {
+        this.rootPage = SlidesPage;
+      }
+    });
 
-    // set our app's pages
-    this.pages = [{ title: 'Compra Compartida', component: ListPage }];
+    this.initializeApp();
   }
 
   initializeApp() {
