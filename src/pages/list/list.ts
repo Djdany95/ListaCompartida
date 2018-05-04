@@ -520,7 +520,7 @@ export class ListPage implements OnInit {
     if (error != null) {
       console.log(error);
       if (error.status === 500) {
-        this.showAlertError('Error!', 'La contraseña ya existe.', 'init');
+        this.showAlertError('Error!', 'Una lista con esa contraseña ya existe.', 'init');
       } else if (error.status === 404) {
         this.showAlertError('Error!', 'No existe la lista.', 'init');
       } else if (error.status === 0) {

@@ -12,7 +12,7 @@ export class ItemsListProvider {
   public url: string;
 
   constructor(private _http: HttpClient) {
-    this.url = 'http://localhost:3678/api/';
+    this.url = 'PRIVATE';
   }
 
   newList(lista: string, pass: string): any {
