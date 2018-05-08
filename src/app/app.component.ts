@@ -1,8 +1,10 @@
+import { WishListPage } from './../pages/wish-list/wish-list';
 import { Component, ViewChild } from '@angular/core';
 
 import { Platform, Nav } from 'ionic-angular';
 
-import { ListPage } from '../pages/list/list';
+import { ShoppingListPage } from '../pages/shopping-list/shopping-list';
+import { TodoListPage } from '../pages/todo-list/todo-list';
 
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
@@ -23,9 +25,17 @@ export class MyApp {
     public splashScreen: SplashScreen,
     private storage: Storage
   ) {
+
     this.storage.get('skipIntro').then(data => {
       if (data != null) {
-        this.rootPage = ListPage;
+        if (data === 'shopping') {
+          this.rootPage = ShoppingListPage;
+        } else if (data === 'todo') {
+          this.rootPage = TodoListPage;
+        } else if (data === 'wish') {
+          console.log(data);
+          this.rootPage = WishListPage;
+        }
       } else {
         this.rootPage = SlidesPage;
       }

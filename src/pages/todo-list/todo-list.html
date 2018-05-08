@@ -1,0 +1,68 @@
+<ion-header>
+
+  <ion-navbar hideBackButton="true">
+
+    <ion-buttons start *ngIf="!desktop">
+      <button ion-button icon-only (tap)="share()">
+        <ion-icon name="md-share"></ion-icon>
+      </button>
+    </ion-buttons>
+
+    <ion-title (press)="optionsListAS()">{{lista}}</ion-title>
+
+    <ion-buttons end="">
+      <button ion-button icon-only (tap)="promptAddItem()">
+        <ion-icon name="add-circle"></ion-icon>
+      </button>
+    </ion-buttons>
+
+  </ion-navbar>
+
+</ion-header>
+
+<ion-content>
+
+  <ion-list>
+    <ion-list-header>
+      Activos
+    </ion-list-header>
+    <ion-item inset *ngFor="let item of itemsActive">
+      <ion-checkbox [(ngModel)]="item.tachado" (press)="editItem(item)" (tap)="moveItem(item)" item-left></ion-checkbox>
+      <ion-label>{{item.nombre}}</ion-label>
+      <span style.color=" {{item.prioridad|prioridades}}" item-right="">{{item.prioridad}}</span>
+      <button ion-button icon-only item-end outline (tap)="delItem(item)">
+        <ion-icon name="remove-circle"></ion-icon>
+      </button>
+    </ion-item>
+  </ion-list>
+
+  <br>
+
+  <ion-list>
+    <ion-list-header>
+      Tachados
+      <button ion-button item-end round outline (tap)="cleanDone()">
+        Limpiar
+      </button>
+    </ion-list-header>
+    <ion-item inset *ngFor="let itemD of itemsDone" [ngStyle]="{'text-decoration': 'line-through'}">
+      <ion-checkbox [(ngModel)]="itemD.tachado" (press)="editItem(itemD)" (tap)="moveItem(itemD)" item-left></ion-checkbox>
+      <ion-label>{{itemD.nombre}}</ion-label>
+      <span style.color=" {{itemD.prioridad|prioridades}}" item-right>{{itemD.prioridad}}</span>
+      <button ion-button icon-only item-end outline (tap)="delItem(itemD)">
+        <ion-icon name="remove-circle"></ion-icon>
+      </button>
+    </ion-item>
+
+  </ion-list>
+
+</ion-content>
+
+<ion-footer>
+  <ion-toolbar>
+    <ion-item inset>
+      <ion-label>Tareas restantes: </ion-label>
+      <span item-right="">{{itemsActive? itemsActive.length:0}}</span>
+    </ion-item>
+  </ion-toolbar>
+</ion-footer>
