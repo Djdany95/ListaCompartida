@@ -8,11 +8,11 @@ import { Injectable } from '@angular/core';
   and Angular DI.
 */
 @Injectable()
-export class ItemsListProvider {
+export class ItemsTodoProvider {
   public url: string;
 
   constructor(private _http: HttpClient) {
-    this.url = 'PRIVATE';
+    this.url = 'http://localhost:3678/todo/';
   }
 
   newList(lista: string, pass: string): any {
@@ -24,50 +24,57 @@ export class ItemsListProvider {
     );
   }
 
-  getList(pass: string): any {
+  getList(lista: string, pass: string): any {
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
     return this._http.post(
       this.url + 'getlist/',
-      { pass: pass },
+      { lista: lista, pass: pass },
       { headers: headers }
     );
   }
 
-  addItem(pass: string, nombre: string, precio: number, tachado?: boolean) {
+  addItem(
+    lista: string,
+    pass: string,
+    nombre: string,
+    prioridad: number,
+    tachado?: boolean
+  ) {
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
     return this._http.post(
       this.url + 'item/',
       {
+        lista: lista,
         pass: pass,
         tachado: tachado ? tachado : false,
         nombre: nombre,
-        precio: precio
+        prioridad: prioridad
       },
       { headers: headers }
     );
   }
 
-  delItem(pass: string, itemId: string) {
+  delItem(lista: string, pass: string, itemId: string) {
     const httpOptions = {
       headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
-      body: { pass: pass, itemId: itemId }
+      body: { lista: lista, pass: pass, itemId: itemId }
     };
     return this._http.delete(this.url + 'item/', httpOptions);
   }
 
-  delList(pass: string) {
+  delList(lista: string, pass: string) {
     const httpOptions = {
       headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
-      body: { pass: pass }
+      body: { lista: lista, pass: pass }
     };
     return this._http.delete(this.url + 'list/', httpOptions);
   }
 
-  editList(pass: string, lista: string) {
+  editList(listaOld: string, pass: string, listaNew: string) {
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
     return this._http.post(
       this.url + 'renamelist/',
-      { pass: pass, lista: lista },
+      { listaOld: listaOld, pass: pass, listaNew: listaNew },
       { headers: headers }
     );
   }

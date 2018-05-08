@@ -1,4 +1,4 @@
-export class Item {
+export class Shopping {
   constructor(
     public tachado: boolean,
     public nombre: string,

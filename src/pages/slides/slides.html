@@ -11,7 +11,7 @@
     <ion-slide *ngFor="let slide of slides">
       <ion-toolbar>
         <ion-buttons end="">
-          <button ion-button color="primary" (tap)="goToList()">Saltar</button>
+          <button ion-button color="primary" (tap)="selectList()">Saltar</button>
         </ion-buttons>
       </ion-toolbar>
       <img class="slide-image" [src]="slide.image">
@@ -22,8 +22,8 @@
       <ion-toolbar>
       </ion-toolbar>
       <img class="slide-image" src="../../assets/imgs/ica-slidebox-img-4.png">
-      <h2 class="slide-title">Listo para empezar?</h2>
-      <button ion-button large clear icon-end color="primary" (tap)="goToList()">
+      <h2 class="slide-title">Empezamos?</h2>
+      <button ion-button large clear icon-end color="primary" (tap)="selectList()">
         Entrar
         <ion-icon name="arrow-forward"></ion-icon>
       </button>

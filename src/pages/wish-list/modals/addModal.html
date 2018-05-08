@@ -1,0 +1,44 @@
+<ion-header>
+    <ion-toolbar>
+        <ion-title>
+            Añadir Producto
+        </ion-title>
+        <ion-buttons start>
+            <button ion-button item-end round small outline color="primary" (tap)="dismiss('cancel')">
+                Cancelar
+            </button>
+        </ion-buttons>
+    </ion-toolbar>
+</ion-header>
+<ion-content>
+    <ion-list>
+
+        <ion-item>
+            <ion-label floating>Categoria</ion-label>
+            <ion-input type="text" [(ngModel)]="categoria"></ion-input>
+        </ion-item>
+
+        <ion-item>
+            <ion-label floating>Nombre</ion-label>
+            <ion-input type="text" [(ngModel)]="nombre"></ion-input>
+        </ion-item>
+
+        <ion-item>
+            <ion-label floating>Precio</ion-label>
+            <ion-input type="number" [(ngModel)]="precio"></ion-input>
+        </ion-item>
+
+        <ion-item>
+            <ion-label floating>URL (Con el http://)</ion-label>
+            <ion-input type="url" [(ngModel)]="url" clearInput='true'></ion-input>
+        </ion-item>
+
+        <ion-item>
+            <ion-label floating>(Opcional) Imagen (Con el http://)</ion-label>
+            <ion-input type="url" [(ngModel)]="image" clearInput='true'></ion-input>
+        </ion-item>
+
+    </ion-list>
+
+    <button ion-button full large (tap)="dismiss()">Añadir</button>
+</ion-content>

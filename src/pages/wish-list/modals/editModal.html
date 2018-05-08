@@ -1,0 +1,47 @@
+<ion-header class="editRadius">
+    <ion-toolbar>
+        <ion-title>
+            Editar {{producto.nombre}}
+        </ion-title>
+        <ion-buttons start>
+            <button ion-button item-end round small outline color="primary" (tap)="dismiss('cancel')">
+                Cancelar
+            </button>
+        </ion-buttons>
+    </ion-toolbar>
+</ion-header>
+<ion-content class="editRadius">
+    <ion-list>
+
+        <ion-item>
+            <ion-label floating>Categoria</ion-label>
+            <ion-input type="text" [(ngModel)]="producto.categoria"></ion-input>
+        </ion-item>
+
+        <ion-item>
+            <ion-label floating>Nombre</ion-label>
+            <ion-input type="text" [(ngModel)]="producto.nombre"></ion-input>
+        </ion-item>
+
+        <ion-item>
+            <ion-label floating>Precio</ion-label>
+            <ion-input type="number" [(ngModel)]="producto.precio"></ion-input>
+        </ion-item>
+
+        <ion-item>
+            <ion-label floating>URL (Con el http://)</ion-label>
+            <ion-input type="url" [(ngModel)]="producto.url" clearInput='true'></ion-input>
+        </ion-item>
+
+        <ion-item>
+            <ion-thumbnail item-start>
+                <img src={{producto.image}} onerror="this.src='https://www.latondelafueva.com/wp-content/uploads/2012/08/eshopex-compra.png'">
+            </ion-thumbnail>
+            <ion-label floating>Imagen (Opcional)</ion-label>
+            <ion-input type="url" [(ngModel)]="producto.image" clearInput='true'></ion-input>
+        </ion-item>
+
+    </ion-list>
+
+    <button ion-button full large (tap)="dismiss(producto)">Editar</button>
+</ion-content>

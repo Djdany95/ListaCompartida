@@ -1,0 +1,72 @@
+<ion-header>
+
+  <ion-navbar color="primary" hideBackButton="true">
+
+    <ion-buttons start *ngIf="!desktop">
+      <button ion-button icon-only (tap)="share()">
+        <ion-icon name="md-share"></ion-icon>
+      </button>
+    </ion-buttons>
+
+    <ion-title (press)="optionsListAS()">{{lista}}</ion-title>
+
+    <ion-buttons end="">
+      <button ion-button icon-only (tap)="promptAddItem()">
+        <ion-icon name="add-circle"></ion-icon>
+      </button>
+    </ion-buttons>
+
+  </ion-navbar>
+
+</ion-header>
+
+<ion-content>
+
+  <ion-list *ngFor="let cat of categorias; index as i;">
+    <ion-item-divider color="light" (tap)="promptAddItem(cat)">
+      <span item-right="">{{totalCategorias[i]}}€</span>
+      {{cat}}
+    </ion-item-divider>
+
+    <ng-container *ngFor="let item of itemsActive">
+      <ng-container *ngIf="item.categoria===cat">
+        <ion-item-sliding>
+          <ion-item inset>
+            <ion-avatar item-start>
+              <img src={{item.image}} onerror="this.src='https://www.latondelafueva.com/wp-content/uploads/2012/08/eshopex-compra.png'">
+            </ion-avatar>
+            <ion-label (tap)="promptDetailstItem(item)">{{item.nombre}}</ion-label>
+            <span item-right="">{{item.precio}}€</span>
+          </ion-item>
+          <ion-item-options side="left">
+            <button ion-button color="default" icon-start (tap)="promptEditItem(item)">
+              <ion-icon name="create"></ion-icon>
+              Editar
+            </button>
+            <button ion-button color="danger" icon-start (tap)="delItem(item)">
+              <ion-icon name="trash"></ion-icon>
+              Eliminar
+            </button>
+          </ion-item-options>
+          <ion-item-options side="right" (ionSwipe)="share()">
+            <button ion-button color="secondary" icon-start expandable (tap)="share(item)">
+              <ion-icon name="md-share"></ion-icon>
+              Compartir
+            </button>
+          </ion-item-options>
+        </ion-item-sliding>
+      </ng-container>
+    </ng-container>
+
+  </ion-list>
+
+</ion-content>
+
+<ion-footer>
+  <ion-toolbar>
+    <ion-item inset color="primary">
+      <ion-label>Total: </ion-label>
+      <span item-right="">{{total}}€</span>
+    </ion-item>
+  </ion-toolbar>
+</ion-footer>
