@@ -25,7 +25,6 @@ export class MyApp {
     public splashScreen: SplashScreen,
     private storage: Storage
   ) {
-
     this.storage.get('skipIntro').then(data => {
       if (data != null) {
         if (data === 'shopping') {
