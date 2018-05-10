@@ -1,1 +1,1 @@
-export const LISTASCOMPARTIDASAPI_URL='http://localhost:3678/'
+export const LISTASCOMPARTIDASAPI_URL='SET YOURS'
