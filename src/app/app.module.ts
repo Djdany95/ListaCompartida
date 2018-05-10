@@ -17,7 +17,7 @@ import { SplashScreen } from '@ionic-native/splash-screen';
 import { Market } from '@ionic-native/market';
 import { AppRate } from '@ionic-native/app-rate';
 import { ItemsShoppingProvider } from '../providers/items/items-shopping';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HttpClient } from '@angular/common/http';
 import { SocialSharing } from '@ionic-native/social-sharing';
 import { IonicStorageModule } from '@ionic/storage';
 import { ItemsTodoProvider } from '../providers/items/items-todo';

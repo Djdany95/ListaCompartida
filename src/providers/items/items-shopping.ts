@@ -1,3 +1,4 @@
+import { LISTASCOMPARTIDASAPI_URL } from './../constants';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 
@@ -12,7 +13,7 @@ export class ItemsShoppingProvider {
   public url: string;
 
   constructor(private _http: HttpClient) {
-    this.url = 'http://localhost:3678/shopping/';
+    this.url = LISTASCOMPARTIDASAPI_URL+'shopping/';
   }
 
   newList(lista: string, pass: string): any {
